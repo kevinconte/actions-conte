@@ -1,0 +1,48 @@
+name: Hello World Personalizzato
+
+#runname:nomeesecuzionepersonalizzato
+run-name: ${{ github.actor }} sta testando GitHub Actions su ${{ github.repository }} 🚀
+
+on: [push]
+
+jobs:
+  hello-world:
+    runs-on: ubuntu-latest
+
+    steps:
+      #checkout:scaricareilrepositorysulrunner
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      #info:stampainformazionidicontestogithubactions
+      - name: Stampa info contesto GitHub
+        run: |
+          echo "=== INFO WORKFLOW ==="
+          echo "Workflow: ${{ github.workflow }}"
+          echo "Run ID: ${{ github.run_id }}"
+          echo "Actor: ${{ github.actor }}"
+          echo ""
+          echo "=== INFO REPOSITORY ==="
+          echo "Repository (owner/repo): ${{ github.repository }}"
+          echo "Repository URL: ${{ github.server_url }}/${{ github.repository }}"
+          echo ""
+          echo "=== INFO COMMIT ==="
+          echo "SHA: ${{ github.sha }}"
+          echo "Messaggio commit (se disponibile): ${{ github.event.head_commit.message }}"
+          echo "Autore commit (se disponibile): ${{ github.event.head_commit.author.name }}"
+          echo ""
+          echo "=== DATA/ORA ESECUZIONE ==="
+          date
+
+      #filemodificati:eventpayload
+      - name: Lista file modificati (event payload)
+        if: ${{ github.event.head_commit != null }}
+        run: |
+          echo "Added: ${{ join(github.event.head_commit.added, ', ') }}"
+          echo "Modified: ${{ join(github.event.head_commit.modified, ', ') }}"
+          echo "Removed: ${{ join(github.event.head_commit.removed, ', ') }}"
+
+      #filemodificati:fallbackgitdiff
+      - name: Lista file modificati (git diff fallback)
+        run: |
+          git diff --name-only HEAD~1 HEAD 2>/dev/null || echo "Non disponibile"
